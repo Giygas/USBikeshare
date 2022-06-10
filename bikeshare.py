@@ -3,8 +3,9 @@ import pandas as pd
 import numpy as np
 from os import system, name
 
-months = ['January', 'February', 'March', 'April', 'May', 'June', 'All']
-days = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+#all possible month and day selections
+months = ['January', 'February', 'March', 'April', 'May', 'June']
+days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 def clrscr():
     """Method for clearing the screen"""
@@ -23,6 +24,9 @@ CITY_DATA = {'chicago': 'data/chicago.csv',
 
 
 def get_filters():
+    # if there's no input, no filters will be applied
+    month = "all"
+    day = "all"
     """
     Asks user to specify a city, month, and day to analyze.
     Returns:
@@ -30,9 +34,7 @@ def get_filters():
         (str) month - name of the month to filter by, or "all" to apply no month filter
         (str) day - name of the day of week to filter by, or "all" to apply no day filter
     """
-    # if there's no input, no filters will be applied
-    month = "all"
-    day = "all"
+    
     # a list containing the differents input possibilities for city
     cities = ['chicago', 'new', 'new york', 'new york city','washington', 'c', 'n', 'w']
     # get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
@@ -57,54 +59,65 @@ def get_filters():
         except:
             print("Sorry, that's an invalid option, try again")
             time.sleep(2)
-    
+            
+    #Get the filter for month, day or both
+    while True:
+        data_filter = input("Would you like to filter by month, day, both or none: ")
+        filter_options = ['month', 'day', 'both', 'none']
+        if data_filter in filter_options:
+            break
+        else:
+            print("Sorry, you must input month, day, both or none, try again")
+            time.sleep(1)
+            
     # get user input for month (all, january, february, ... , june)
-    while True:
-        clrscr()
-        print('Hello! Let\'s explore some US bikeshare data!')
-        print('City selected: ',city.title())
-        print('-'*40)
-        print("For witch month you do want to see the data? You can choose: ")
-        print('\t',*months, sep = ' | ')
-        try:
-            month = input("Your choice: ").lower()
-            if month.title() not in months:
-                print("Sorry, you must input a valid month, try again")
+    if data_filter == 'month' or data_filter == 'both':
+        while True:
+            clrscr()
+            print('Hello! Let\'s explore some US bikeshare data!')
+            print('City selected: ',city.title())
+            print('-'*40)
+            print("For witch month you do want to see the data? You can choose: ")
+            print('\t',*months, sep = ' | ')
+            try:
+                month = input("Your choice: ").lower()
+                if month.title() not in months:
+                    print("Sorry, you must input a valid month, try again")
+                    time.sleep(2)
+                else:
+                    break
+            except:
+                print("Sorry, that's an invalid option, try again")
                 time.sleep(2)
-            else:
-                break
-        except:
-            print("Sorry, that's an invalid option, try again")
-            time.sleep(2)
-    
+                
     # get user input for day of week (all, monday, tuesday, ... sunday)
-    while True:
-        clrscr()
-        print('Hello! Let\'s explore some US bikeshare data!')
-        print('City selected: ',city.title())
-        print("Month selected: ", month.title())
-        print('-'*40)
-        print("You can choose: ")
-        print("\t", *days, sep = ' | ')
-        try:
-            day = input("Your choice: ").lower()
-            if day.title() not in days:
-                print("Sorry, you must input a valid day, try again")
+    if data_filter == 'day' or data_filter == 'both':
+        while True:
+            clrscr()
+            print('Hello! Let\'s explore some US bikeshare data!')
+            print('City selected: ',city.title())
+            print("Month selected: ", month.title())
+            print('-'*40)
+            print("For witch day you do want to see the data? You can choose: ")
+            print("\t", *days, sep = ' | ')
+            try:
+                day = input("Your choice: ").lower()
+                if day.title() not in days:
+                    print("Sorry, you must input a valid day, try again")
+                    time.sleep(2)
+                else:
+                    break
+            except:
+                print("Sorry, that's an invalid option, try again")
                 time.sleep(2)
-            else:
-                break
-        except:
-            print("Sorry, that's an invalid option, try again")
-            time.sleep(2)
-    
+                
     #show the city and filters
     clrscr()
     print('Exploring US bikeshare data for ',city.title())
-    print("Month filter: ", month.title())
-    print('Day filter: ',day.title())
+    print("Month: ", month.title())
+    print('Day: ',day.title())
     time.sleep(1)
-    
-    print('-'*40)
+    print('-'*60)
     return city, month, day
 
 
