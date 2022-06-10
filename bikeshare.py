@@ -6,6 +6,13 @@ from os import system, name
 #all possible month and day selections
 months = ['January', 'February', 'March', 'April', 'May', 'June']
 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+<<<<<<< HEAD
+=======
+
+# if there's no input, no filters will be applied
+month = "all"
+day = "all"
+>>>>>>> 41aa73c8d277f11d6e97f0de9c2da5721cd3fc22
 
 def clrscr():
     """Method for clearing the screen"""
@@ -62,12 +69,20 @@ def get_filters():
             
     #Get the filter for month, day or both
     while True:
+<<<<<<< HEAD
         data_filter = input("Would you like to filter by month, day, both or none: ")
         filter_options = ['month', 'day', 'both', 'none']
         if data_filter in filter_options:
             break
         else:
             print("Sorry, you must input month, day, both or none, try again")
+=======
+        data_filter = input("Would you like to filter by month, day or both: ")
+        if data_filter == 'month' or data_filter == 'day' or data_filter == 'both':
+            break
+        else:
+            print("Sorry, you must input month, day or both, try again")
+>>>>>>> 41aa73c8d277f11d6e97f0de9c2da5721cd3fc22
             time.sleep(1)
             
     # get user input for month (all, january, february, ... , june)
