@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 from os import system, name
 
+months = ['January', 'February', 'March', 'April', 'May', 'June', 'All']
+days = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 def clrscr():
     """Method for clearing the screen"""
@@ -57,16 +59,16 @@ def get_filters():
             time.sleep(2)
     
     # get user input for month (all, january, february, ... , june)
-    months = ['january', 'february', 'march', 'april', 'may', 'june', 'all']
     while True:
         clrscr()
         print('Hello! Let\'s explore some US bikeshare data!')
         print('City selected: ',city.title())
         print('-'*40)
-        print("You can choose ", months)
+        print("For witch month you do want to see the data? You can choose: ")
+        print('\t',*months, sep = ' | ')
         try:
             month = input("Your choice: ").lower()
-            if month not in months:
+            if month.title() not in months:
                 print("Sorry, you must input a valid month, try again")
                 time.sleep(2)
             else:
@@ -76,17 +78,17 @@ def get_filters():
             time.sleep(2)
     
     # get user input for day of week (all, monday, tuesday, ... sunday)
-    days = ['all', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     while True:
         clrscr()
         print('Hello! Let\'s explore some US bikeshare data!')
         print('City selected: ',city.title())
         print("Month selected: ", month.title())
         print('-'*40)
-        print("You can choose ", days)
+        print("You can choose: ")
+        print("\t", *days, sep = ' | ')
         try:
             day = input("Your choice: ").lower()
-            if day not in days:
+            if day.title() not in days:
                 print("Sorry, you must input a valid day, try again")
                 time.sleep(2)
             else:
@@ -94,7 +96,13 @@ def get_filters():
         except:
             print("Sorry, that's an invalid option, try again")
             time.sleep(2)
-        
+    
+    #show the city and filters
+    clrscr()
+    print('Exploring US bikeshare data for ',city.title())
+    print("Month filter: ", month.title())
+    print('Day filter: ',day.title())
+    time.sleep(1)
     
     print('-'*40)
     return city, month, day
@@ -147,7 +155,9 @@ def time_stats(df):
     start_time = time.time()
 
     # display the most common month
-    print("The most commont month is: ", df['month'].mode()[0])
+    most_common_month = months[(df['month'].mode()[0]) - 1].title()
+    #months[(df['month'].mode()[0]) - 1].title()
+    print("The most commont month is: ", most_common_month)
     print('-'*20)
     # display the most common day of week
     print("The most common day of the week is: ", df['day_of_week'].mode()[0])
@@ -174,7 +184,10 @@ def station_stats(df):
     print("The most commonly used end station is: ", df.mode()['End Station'][0])
     # display most frequent combination of start station and end station trip
     combination = df.groupby(['Start Station', 'End Station']).size().idxmax()
-    print("The most common combination of starting and ending station are: ", combination)
+    print("The most common combination of starting and ending station are:", combination)
+    print("{:>20}{:>25}".format("Starting Station:", combination[0]))
+    print("{:>20}{:>25}".format("Ending Station:", combination[1]))
+
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('*'*40)
@@ -221,8 +234,8 @@ def user_stats(df):
     
     # Display earliest, most recent, and most common year of birth
     print("Earliest year of birth :", df['Birth Year'].min().astype(int))
-    print("Most recent year of birth :", df['Birth Year'].max())
-    print("Most common year of birth :", df['Birth Year'].mode()[0])
+    print("Most recent year of birth :", df['Birth Year'].max().astype(int))
+    print("Most common year of birth :", df['Birth Year'].mode()[0].astype(int))
     print('-'*20)
 
     
