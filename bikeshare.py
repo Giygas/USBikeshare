@@ -197,11 +197,10 @@ def station_stats(df):
     print("The most commonly used end station is: ", df.mode()['End Station'][0])
     # display most frequent combination of start station and end station trip
     combination = df.groupby(['Start Station', 'End Station']).size().idxmax()
-    print("The most common combination of starting and ending station are:", combination)
-    print("{:>20}{:>25}".format("Starting Station:", combination[0]))
-    print("{:>20}{:>25}".format("Ending Station:", combination[1]))
-
-
+    print("The most frequent combination of start station and end station are:")
+    print(f"{'Starting Station: ':>20}{combination[0]}")
+    print(f"{'Ending Station: ':>20}{combination[1]}")
+    
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('*'*40)
 
@@ -254,7 +253,18 @@ def user_stats(df):
     
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('*'*40)
+    
 
+def show_raw_data(df):
+    i = 0
+    rd = df.drop([df.columns[0], 'month', 'day_of_week', 'diff_min'], axis=1)
+    while True:
+        print(rd.iloc[i:i+5].to_string())
+        selection = input("Do you want to see the next 5 rows? Press y to continue: ")
+        if selection == 'y':
+            i += 5
+        else:
+            break
 
 def main():
     while True:
@@ -265,7 +275,9 @@ def main():
         trip_duration_stats(df)
         if city != 'washington':
             user_stats(df)
-
+        raw_data = input("Would you like to see raw data? Enter yes or no: ")
+        if raw_data == 'yes':
+            show_raw_data(df)
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
             break
