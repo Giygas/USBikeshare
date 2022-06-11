@@ -3,7 +3,11 @@ import pandas as pd
 import numpy as np
 from os import system, name
 
+#pd.set_option('display.max_colwidth', None)
+#pd.set_option('display.width', 20)
 pd.set_option('display.max_rows', 10)
+pd.set_option('colheader_justify', 'center')
+
 #all possible month and day selections
 months = ['January', 'February', 'March', 'April', 'May', 'June']
 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -38,11 +42,12 @@ def get_filters():
     
     # a list containing the differents input possibilities for city
     cities = ['chicago', 'new', 'new york', 'new york city','washington', 'c', 'n', 'w']
+    
     # get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
     while True:
         clrscr()
         print('Hello! Let\'s explore some US bikeshare data!')
-        print('-'*40)
+        print('='*70)
         try:
             city = input("You want to see data from wich city? (Chicago, New York City, Washington): ").lower()
             # if the input is in the list of valid options, standarize the name of the city
@@ -69,7 +74,7 @@ def get_filters():
             break
         else:
             print("Sorry, you must input month, day, both or none, try again")
-            time.sleep(1)
+            time.sleep(0.5)
             
     # get user input for month (all, january, february, ... , june)
     if data_filter == 'month' or data_filter == 'both':
@@ -77,7 +82,7 @@ def get_filters():
             clrscr()
             print('Hello! Let\'s explore some US bikeshare data!')
             print('City selected: ',city.title())
-            print('-'*40)
+            print('='*70)
             print("For witch month you do want to see the data? You can choose: ")
             print('\t',*months, sep = ' | ')
             try:
@@ -98,7 +103,7 @@ def get_filters():
             print('Hello! Let\'s explore some US bikeshare data!')
             print('City selected: ',city.title())
             print("Month selected: ", month.title())
-            print('-'*40)
+            print('='*70)
             print("For witch day you do want to see the data? You can choose: ")
             print("\t", *days, sep = ' | ')
             try:
@@ -118,7 +123,7 @@ def get_filters():
     print("Month: ", month.title())
     print('Day: ',day.title())
     time.sleep(1)
-    print('-'*60)
+    print('='*70)
     return city, month, day
 
 
@@ -164,7 +169,7 @@ def time_stats(df):
     """Displays statistics on the most frequent times of travel."""
     
     print('\nCalculating The Most Frequent Times of Travel...')
-    print('-'*20)
+    print('-'*70)
     start_time = time.time()
     
     # display the most common month
@@ -186,7 +191,7 @@ def station_stats(df):
     """Displays statistics on the most popular stations and trip."""
 
     print('\nCalculating The Most Popular Stations and Trip...')
-    print('-'*20)
+    print('-'*70)
     start_time = time.time()
     
     # display most commonly used start station
@@ -209,7 +214,7 @@ def trip_duration_stats(df):
     """Displays statistics on the total and average trip duration."""
     
     print('\nCalculating Trip Duration...')
-    print('-'*20)
+    print('-'*70)
     start_time = time.time()
     
     # display total travel time
@@ -228,7 +233,7 @@ def user_stats(df):
     """Displays statistics on bikeshare users."""
     
     print('\nCalculating User Stats...')
-    print('-'*20)
+    print('-'*70)
     start_time = time.time()
     
     # Display counts of user types
@@ -251,19 +256,26 @@ def user_stats(df):
     
 
 def show_raw_data(df):
-    i = 0
     x = 0
     rd = df.drop(['month', 'day_of_week', 'diff_min'], axis=1)
     rd.rename(columns = {'Unnamed: 0': 'Id'}, inplace = True)
+    print(rd.info())
     while True:
-        for x in range(x, x+5):
-            print(rd.iloc[x].T.to_string())
-            print('-'*40)    
-        #print(rd.iloc[i:i+5].T)
-        selection = input("Do you want to see the next 5 rows? Press y to continue: ")
-        if selection == 'y':
-            i += 5
-        else:
+        try:
+            for x in range(x, x + 5):
+                print(rd.iloc[x].to_string())
+                print('-'*60)
+                #Check for end of file
+                if x > rd.shape[0]:
+                    raise IndexError()
+            print(f"Looking at row {x - 3} to {x + 1}")    
+            selection = input("Do you want to see the next 5 rows? Press y to continue: ")
+            if selection == 'y':
+                x += 1
+            else:
+                break
+        except:
+            print("\n*** END OF FILE ***")
             break
 
 def main():
@@ -276,11 +288,10 @@ def main():
         if city != 'washington':
             user_stats(df)
         else:
-            print("THERE IS NO USER DATA FOR WASHINGTON")
+            print("\n* THERE IS NO USER DATA FOR WASHINGTON *\n")
         raw_data = input("Would you like to see raw data? Enter yes or no: ")
         if raw_data == 'yes':
-            print("Raw Data:")
-            print('-'*40)
+            print("Raw Data:\n")
             show_raw_data(df)
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
