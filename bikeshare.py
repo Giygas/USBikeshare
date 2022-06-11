@@ -3,8 +3,7 @@ import pandas as pd
 import numpy as np
 from os import system, name
 
-#pd.set_option('display.max_colwidth', None)
-#pd.set_option('display.width', 20)
+# Pandas display options settings
 pd.set_option('display.max_rows', 10)
 pd.set_option('colheader_justify', 'center')
 
@@ -29,9 +28,6 @@ CITY_DATA = {'chicago': 'data/chicago.csv',
 
 
 def get_filters():
-    # if there's no input, no filters will be applied
-    month = "all"
-    day = "all"
     """
     Asks user to specify a city, month, and day to analyze.
     Returns:
@@ -39,6 +35,10 @@ def get_filters():
         (str) month - name of the month to filter by, or "all" to apply no month filter
         (str) day - name of the day of week to filter by, or "all" to apply no day filter
     """
+    
+    # if there's no input, no filters will be applied
+    month = "all"
+    day = "all"
     
     # a list containing the differents input possibilities for city
     cities = ['chicago', 'new', 'new york', 'new york city','washington', 'c', 'n', 'w']
@@ -256,10 +256,10 @@ def user_stats(df):
     
 
 def show_raw_data(df):
+    """Displays the raw data to the user"""
     x = 0
     rd = df.drop(['month', 'day_of_week', 'diff_min'], axis=1)
     rd.rename(columns = {'Unnamed: 0': 'Id'}, inplace = True)
-    print(rd.info())
     while True:
         try:
             for x in range(x, x + 5):
