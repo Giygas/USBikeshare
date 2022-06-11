@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from os import system, name
 
+pd.set_option('display.max_rows', 10)
 #all possible month and day selections
 months = ['January', 'February', 'March', 'April', 'May', 'June']
 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -62,7 +63,7 @@ def get_filters():
             
     #Get the filter for month, day or both
     while True:
-        data_filter = input("Would you like to filter by month, day, both or none: ")
+        data_filter = input("Would you like to filter by month, day, both or none: ").lower()
         filter_options = ['month', 'day', 'both', 'none']
         if data_filter in filter_options:
             break
@@ -156,30 +157,27 @@ def load_data(city, month, day):
         # filter by day of week to create the new dataframe
         df = df[df['day_of_week'] == day.title()]
     
-    
     return df
 
 
 def time_stats(df):
     """Displays statistics on the most frequent times of travel."""
-
+    
     print('\nCalculating The Most Frequent Times of Travel...')
     print('-'*20)
     start_time = time.time()
-
+    
     # display the most common month
     most_common_month = months[(df['month'].mode()[0]) - 1].title()
-    #months[(df['month'].mode()[0]) - 1].title()
     print("The most commont month is: ", most_common_month)
-    print('-'*20)
+    
     # display the most common day of week
     print("The most common day of the week is: ", df['day_of_week'].mode()[0])
-    print('-'*20)
+    
     # display the most common start hour
     start_hour = df['Start Time'].dt.hour
     print("The most common Start hour is: ", start_hour.mode()[0])
-    print('-'*20)
-
+    
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('*'*40)
 
@@ -190,11 +188,13 @@ def station_stats(df):
     print('\nCalculating The Most Popular Stations and Trip...')
     print('-'*20)
     start_time = time.time()
-
+    
     # display most commonly used start station
     print("The most commonly used start station is: ", df.mode()['Start Station'][0])
+    
     # display most commonly used end station
     print("The most commonly used end station is: ", df.mode()['End Station'][0])
+    
     # display most frequent combination of start station and end station trip
     combination = df.groupby(['Start Station', 'End Station']).size().idxmax()
     print("The most frequent combination of start station and end station are:")
@@ -211,16 +211,14 @@ def trip_duration_stats(df):
     print('\nCalculating Trip Duration...')
     print('-'*20)
     start_time = time.time()
-
+    
     # display total travel time
     df['diff_min'] = (df['End Time'] - df['Start Time'])
     total_travel_time = df['diff_min'].sum()
     print("Total travel time: ", total_travel_time)
-    print('-'*20)
     # display mean travel time
     mean_travel_time = df['diff_min'].mean()
     print("Mean travel time: ", mean_travel_time)
-    print('-'*20)
     
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('*'*40)
@@ -234,22 +232,19 @@ def user_stats(df):
     start_time = time.time()
     
     # Display counts of user types
-    print("Differents user types and its count:\n")
+    print("\nDifferents user types and its count:\n")
     print(df['User Type'].value_counts().to_frame().T)
-    print('-'*20)
+    print()
     
     # Display counts of gender
-    print("Differents genders and its count:\n")
+    print("\nDifferents genders and its count:\n")
     print(df['Gender'].value_counts().to_frame().T)   
-    print('-'*20)
-
+    print()
     
     # Display earliest, most recent, and most common year of birth
     print("Earliest year of birth :", df['Birth Year'].min().astype(int))
     print("Most recent year of birth :", df['Birth Year'].max().astype(int))
     print("Most common year of birth :", df['Birth Year'].mode()[0].astype(int))
-    print('-'*20)
-
     
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('*'*40)
@@ -257,9 +252,14 @@ def user_stats(df):
 
 def show_raw_data(df):
     i = 0
-    rd = df.drop([df.columns[0], 'month', 'day_of_week', 'diff_min'], axis=1)
+    x = 0
+    rd = df.drop(['month', 'day_of_week', 'diff_min'], axis=1)
+    rd.rename(columns = {'Unnamed: 0': 'Id'}, inplace = True)
     while True:
-        print(rd.iloc[i:i+5].to_string())
+        for x in range(x, x+5):
+            print(rd.iloc[x].T.to_string())
+            print('-'*40)    
+        #print(rd.iloc[i:i+5].T)
         selection = input("Do you want to see the next 5 rows? Press y to continue: ")
         if selection == 'y':
             i += 5
@@ -275,8 +275,12 @@ def main():
         trip_duration_stats(df)
         if city != 'washington':
             user_stats(df)
+        else:
+            print("THERE IS NO USER DATA FOR WASHINGTON")
         raw_data = input("Would you like to see raw data? Enter yes or no: ")
         if raw_data == 'yes':
+            print("Raw Data:")
+            print('-'*40)
             show_raw_data(df)
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
