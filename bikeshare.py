@@ -49,7 +49,7 @@ def get_filters():
         clrscr()
         print('Hello! Let\'s explore some US bikeshare data!')
         print('='*70)
-        city = input("You want to see data from wich city? (Chicago, New York City, Washington): ").lower()
+        city = input("You want to see data from wich city? (Chicago, New York City, Washington): ").lower().strip()
         # if the input is in the list of valid options, standarize the name of the city
         if city in cities:
             if city == 'c':
@@ -61,34 +61,35 @@ def get_filters():
             break
         print("Sorry, you must input a valid city, try again ")
         time.sleep(2)
-            
+    
     # Get the filter for month, day or both
+    print('City selected:', city.title())
     while True:
-        data_filter = input("Would you like to filter by month, day, both or none: ").lower()
+        data_filter = input("Would you like to filter by month, day, both or none: ").lower().strip()
         filter_options = ['month', 'day', 'both', 'none']
         if data_filter in filter_options:
             break
         else:
-            print("Sorry, you must input month, day, both or none, try again")
-            time.sleep(0.5)
-            
+            print("Sorry, you must input month, day, both or none, try again\n")
+            time.sleep(1)
+    
     # get user input for month (all, january, february, ... , june)
     if data_filter == 'month' or data_filter == 'both':
         while True:
             clrscr()
             print('Hello! Let\'s explore some US bikeshare data!')
-            print('City selected: ', city.title())
+            print('City selected:', city.title())
             print('='*70)
             print("For witch month you do want to see the data? You can choose: ")
             print('\t', *months, sep=' | ')
             
-            month = input("Your choice: ").lower()
+            month = input("Your choice: ").lower().strip()
             if month.title() not in months:
                 print("Sorry, you must input a valid month, try again")
                 time.sleep(2)
             else:
                 break
-                
+            
     # get user input for day of week (all, monday, tuesday, ... sunday)
     if data_filter == 'day' or data_filter == 'both':
         while True:
@@ -106,7 +107,7 @@ def get_filters():
                 time.sleep(2)
             else:
                 break
-                
+            
     # show the city and filters
     clrscr()
     print('Exploring US bikeshare data for ', city.title())
@@ -142,11 +143,10 @@ def load_data(city, month, day):
     # filter by month if applicable
     if month != 'all':
         # use the index of the months list to get the corresponding int
-        #months = ['january', 'february', 'march', 'april', 'may', 'june']
         month = months.index(month.title()) + 1
         # filter by month to create the new dataframe
         df = df[df['month'] == month]
-        
+    
     # filter by day of week if applicable
     if day != 'all':
         # filter by day of week to create the new dataframe
@@ -259,7 +259,7 @@ def show_raw_data(df):
                 if x > rd.shape[0]:
                     raise IndexError()
             print(f"Looking at row {x - 3} to {x + 1}")
-            selection = input("Do you want to see the next 5 rows? Press y to continue: ")
+            selection = input("Do you want to see the next 5 rows? Press y to continue: ").lower().strip()
             if selection == 'y':
                 x += 1
             else:
@@ -282,11 +282,11 @@ def main():
             user_stats(df)
         else:
             print("\n* THERE IS NO USER DATA FOR WASHINGTON *\n")
-        raw_data = input("Would you like to see raw data? Enter yes or no: ")
+        raw_data = input("Would you like to see raw data? Enter yes or no: ").lower().strip()
         if raw_data == 'yes':
             print("Raw Data:\n")
             show_raw_data(df)
-        restart = input('\nWould you like to restart? Enter yes or no.\n')
+        restart = input('\nWould you like to restart? Enter yes or no.\n').lower().strip()
         if restart.lower() != 'yes':
             break
 
